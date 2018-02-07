@@ -7,6 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class PlaceController extends Controller
 {
@@ -20,6 +21,7 @@ class PlaceController extends Controller
       $places = $this->get('doctrine.orm.entity_manager')
       ->getRepository('AppBundle:Place')
       ->findAll();
+
 
       $formatted = [];
       foreach ($places as $place)
@@ -42,6 +44,11 @@ class PlaceController extends Controller
       $place = $this->get('doctrine.orm.entity_manager')
       ->getRepository('AppBundle:Place')
       ->find($request->get('place_id'));
+
+      if(empty($place))
+      {
+        return new JsonResponse(['message' => 'Place Not Found'], Response::HTTP_NOT_FOUND);
+      }
 
       $formatted = [
         'id' => $place->getId(),
