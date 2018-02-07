@@ -32,5 +32,24 @@ class UserController extends Controller
     }
     return new JsonResponse($formatted);
   }
+
+  /**
+    * @Route("/users/{user_id}", requirements={"user_id" = "\d+"}, name="users_one")
+    * @Method({"GET"})
+    */
+  public function getUserAction(Request $request)
+  {
+    $user = $this->get('doctrine.orm.entity_manager')
+    ->getRepository('AppBundle:User')
+    ->find($request->get('user_id'));
+
+    $formatted = [
+      'id' => $user->getId(),
+      'firstname' => $user->getFirstname(),
+      'lastname' => $user->getLastname(),
+      'email' => $user->getEmail(),
+    ];
+    return new JsonResponse($formatted);
+  }
 }
  ?>
