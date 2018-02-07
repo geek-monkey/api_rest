@@ -16,11 +16,21 @@ class PlaceController extends Controller
      */
     public function getPlacesAction(Request $request)
     {
-      return new JsonResponse([
-        new Place("Tour Eiffel", "78 Rue Mendès France, paris "),
-        new Place("Mont-Saint-Michel", "50170 Le Mont-Saint-Michel"),
-        new Place("Château de Versailles", "Place d'Armes, 78000 Versailles"),
-      ]);
+
+      $places = $this->get('doctrine.orm.entity_manager')
+      ->getRepository('AppBundle:Place')
+      ->findAll();
+
+      $formatted = [];
+      foreach ($places as $place)
+      {
+        $formatted[] = [
+          'id' => $place->getId(),
+          'name' => $place->getName(),
+          'address' => $place->getAddress(),
+        ];
+      }
+      return new JsonResponse($formatted);
     }
 
 }
